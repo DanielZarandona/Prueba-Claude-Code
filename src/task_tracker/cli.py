@@ -2,7 +2,7 @@ import argparse
 import sys
 from typing import List, Optional
 
-from task_tracker.models import Task
+from task_tracker.models import PRIORITIES, Task
 from task_tracker.storage import DEFAULT_DATA_PATH, TaskStorage
 
 
@@ -20,8 +20,19 @@ def build_parser() -> argparse.ArgumentParser:
 
     add_parser = subparsers.add_parser("add", help="Agregar una nueva tarea")
     add_parser.add_argument("title", help="Título de la tarea")
+    add_parser.add_argument(
+        "--prioridad",
+        dest="priority",
+        choices=PRIORITIES,
+        default="media",
+        help="Prioridad de la tarea (por defecto: media)",
+    )
 
     subparsers.add_parser("list", help="Listar todas las tareas")
+
+    subparsers.add_parser(
+        "list-high", help="Listar solo las tareas de prioridad alta"
+    )
 
     complete_parser = subparsers.add_parser(
         "complete", help="Marcar una tarea como completada"
@@ -36,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def format_task(task: Task) -> str:
     status = "x" if task.done else " "
-    return f"[{status}] #{task.id} {task.title}"
+    return f"[{status}] #{task.id} {task.title} ({task.priority})"
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -45,7 +56,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     storage = TaskStorage(args.data)
 
     if args.command == "add":
-        task = storage.add(args.title)
+        task = storage.add(args.title, priority=args.priority)
         print(f"Tarea agregada: {format_task(task)}")
         return 0
 
@@ -53,6 +64,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         tasks = storage.list()
         if not tasks:
             print("No hay tareas.")
+        else:
+            for task in tasks:
+                print(format_task(task))
+        return 0
+
+    if args.command == "list-high":
+        tasks = storage.list_high_priority()
+        if not tasks:
+            print("No hay tareas de prioridad alta.")
         else:
             for task in tasks:
                 print(format_task(task))

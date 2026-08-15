@@ -10,7 +10,7 @@ DEFAULT_DATA_PATH = Path("data") / "tasks.json"
 class TaskStorage:
     """Persiste tareas en un archivo JSON local."""
 
-    def __init__(self, path: Path = DEFAULT_DATA_PATH):
+    def __init__(self, path: Path = DEFAULT_DATA_PATH) -> None:
         self.path = Path(path)
 
     def load(self) -> List[Task]:
@@ -25,16 +25,19 @@ class TaskStorage:
         with self.path.open("w", encoding="utf-8") as f:
             json.dump([t.to_dict() for t in tasks], f, indent=2, ensure_ascii=False)
 
-    def add(self, title: str) -> Task:
+    def add(self, title: str, priority: str = "media") -> Task:
         tasks = self.load()
         next_id = max((t.id for t in tasks), default=0) + 1
-        task = Task(id=next_id, title=title)
+        task = Task(id=next_id, title=title, priority=priority)
         tasks.append(task)
         self.save(tasks)
         return task
 
     def list(self) -> List[Task]:
         return self.load()
+
+    def list_high_priority(self) -> List[Task]:
+        return [task for task in self.load() if task.priority == "alta"]
 
     def complete(self, task_id: int) -> Task:
         tasks = self.load()

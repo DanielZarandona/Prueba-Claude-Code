@@ -21,6 +21,34 @@ def test_add_creates_task_with_incremental_id(storage):
     assert first.done is False
 
 
+def test_add_defaults_to_media_priority(storage):
+    task = storage.add("Comprar leche")
+
+    assert task.priority == "media"
+
+
+def test_add_accepts_explicit_priority(storage):
+    task = storage.add("Comprar leche", priority="alta")
+
+    assert task.priority == "alta"
+
+
+def test_add_rejects_invalid_priority(storage):
+    with pytest.raises(ValueError):
+        storage.add("Comprar leche", priority="urgente")
+
+
+def test_list_high_priority_returns_only_alta_tasks(storage):
+    storage.add("Tarea alta", priority="alta")
+    storage.add("Tarea media", priority="media")
+    storage.add("Tarea baja", priority="baja")
+
+    high = storage.list_high_priority()
+
+    assert len(high) == 1
+    assert high[0].title == "Tarea alta"
+
+
 def test_add_persists_to_json_file(storage):
     storage.add("Comprar leche")
 

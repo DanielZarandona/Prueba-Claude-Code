@@ -38,6 +38,35 @@ def test_list_shows_added_tasks(capsys, data_file):
     assert "Pagar factura" in captured.out
 
 
+def test_add_with_priority_shows_it_in_confirmation(capsys, data_file):
+    exit_code = main(["--data", data_file, "add", "Comprar leche", "--prioridad", "alta"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "(alta)" in captured.out
+
+
+def test_list_high_shows_only_high_priority_tasks(capsys, data_file):
+    main(["--data", data_file, "add", "Tarea urgente", "--prioridad", "alta"])
+    main(["--data", data_file, "add", "Tarea normal", "--prioridad", "media"])
+    capsys.readouterr()
+
+    exit_code = main(["--data", data_file, "list-high"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "Tarea urgente" in captured.out
+    assert "Tarea normal" not in captured.out
+
+
+def test_list_high_shows_no_tasks_message_when_empty(capsys, data_file):
+    exit_code = main(["--data", data_file, "list-high"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "No hay tareas de prioridad alta." in captured.out
+
+
 def test_complete_marks_task_as_done(capsys, data_file):
     main(["--data", data_file, "add", "Comprar leche"])
     capsys.readouterr()

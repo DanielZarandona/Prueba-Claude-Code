@@ -1,6 +1,8 @@
 from dataclasses import asdict, dataclass
 from datetime import datetime
 
+PRIORITIES = ("alta", "media", "baja")
+
 
 @dataclass
 class Task:
@@ -8,10 +10,15 @@ class Task:
     title: str
     done: bool = False
     created_at: str = ""
+    priority: str = "media"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not self.created_at:
             self.created_at = datetime.now().isoformat(timespec="seconds")
+        if self.priority not in PRIORITIES:
+            raise ValueError(
+                f"Prioridad inválida: {self.priority!r} (opciones: {', '.join(PRIORITIES)})"
+            )
 
     def to_dict(self) -> dict:
         return asdict(self)
