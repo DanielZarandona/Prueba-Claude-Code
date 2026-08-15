@@ -9,6 +9,7 @@ class Task:
     id: int
     title: str
     done: bool = False
+    # Fecha y hora de creación en formato ISO 8601 (se autocompleta en __post_init__ si no se indica)
     created_at: str = ""
     priority: str = "media"
 

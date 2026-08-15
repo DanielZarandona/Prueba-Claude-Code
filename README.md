@@ -3,7 +3,7 @@
 [![Tests](https://github.com/DanielZarandona/Prueba-Claude-Code/actions/workflows/tests.yml/badge.svg)](https://github.com/DanielZarandona/Prueba-Claude-Code/actions/workflows/tests.yml)
 
 CLI simple para gestionar tareas (agregar, listar, completar, eliminar),
-guardadas en un archivo JSON local en `./data/tasks.json`.
+guardadas en una base de datos SQLite local en `./data/tasks.db`.
 
 ## Estructura del proyecto
 
@@ -15,12 +15,12 @@ task-tracker/
 │       ├── __main__.py   # permite `python -m task_tracker`
 │       ├── cli.py         # parseo de argumentos y comandos
 │       ├── models.py      # modelo Task
-│       └── storage.py     # persistencia en JSON
+│       └── storage.py     # persistencia en SQLite
 ├── tests/
 │   ├── test_cli.py
 │   └── test_storage.py
 ├── data/
-│   └── tasks.json          # se crea automáticamente al agregar la primera tarea
+│   └── tasks.db             # se crea automáticamente al agregar la primera tarea
 ├── pyproject.toml
 ├── requirements.txt
 └── README.md
@@ -56,14 +56,22 @@ task-tracker complete 1
 
 # Eliminar una tarea
 task-tracker delete 1
+
+# Exportar las tareas a CSV (por defecto: tasks.csv)
+task-tracker export
+task-tracker export mis_tareas.csv
+
+# Importar tareas desde un archivo JSON de una versión anterior
+task-tracker migrate-from-json tasks_viejas.json
+task-tracker migrate-from-json tasks_viejas.json --force  # sobrescribe si ya hay tareas
 ```
 
-Por defecto las tareas se guardan en `./data/tasks.json` (relativo al
+Por defecto las tareas se guardan en `./data/tasks.db` (relativo al
 directorio desde el que se ejecuta el comando). Puede usarse otra ruta con
 `--data`:
 
 ```bash
-task-tracker --data otra_ruta/tasks.json list
+task-tracker --data otra_ruta/tasks.db list
 ```
 
 ## Tests
