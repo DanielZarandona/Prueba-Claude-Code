@@ -1,5 +1,7 @@
 # task-tracker
 
+[![Tests](https://github.com/DanielZarandona/Prueba-Claude-Code/actions/workflows/tests.yml/badge.svg)](https://github.com/DanielZarandona/Prueba-Claude-Code/actions/workflows/tests.yml)
+
 CLI simple para gestionar tareas (agregar, listar, completar, eliminar),
 guardadas en un archivo JSON local en `./data/tasks.json`.
 
