@@ -72,3 +72,10 @@ task-tracker --data otra_ruta/tasks.json list
 pip install -r requirements.txt
 pytest
 ```
+
+## Integración continua
+
+El badge "Tests" al inicio de este README refleja el resultado del último
+workflow de GitHub Actions (`.github/workflows/tests.yml`) ejecutado sobre
+`main`. Ese workflow corre `pytest` en Python 3.9 y 3.12 en cada `push` y
+`pull_request`; hacer clic en el badge lleva al historial de runs.
